@@ -8,15 +8,16 @@
   },
   "颜文字真君": {
     "password": "12345678",
-    "totalBalance": "9269643890342",
+    "totalBalance": "9269643890342.00",
     "pendingBalance": "0.00",
     "registerTime": "2026/06/17 20:30:00",
     "orders": []
   },
-    "turtle": {
+  "turtle": {
     "password": "guazi",
-    "totalBalance": "92696438903421263324324423",
-    "pendingBalance": "4460",
+    "totalBalance": "92696438903421263324324423.00",
+    "pendingBalance": "4460.00",
     "registerTime": "2026/06/17 20:30:00",
     "orders": []
+  }
 }
