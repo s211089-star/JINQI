@@ -456,6 +456,10 @@
       background: #1f2937;
       color: #fff;
     }
+    .section-icon.blue {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
     .section-text-title {
       font-size: 13px;
       font-weight: 600;
@@ -753,6 +757,19 @@
       </div>
 
       <div class="my-section-block">
+        <div class="my-section-title">核心工具 (JSON 导出)</div>
+        <div class="section-item" onclick="exportToDataJson()">
+          <div class="section-item-left">
+            <div class="section-icon blue">💾</div>
+            <div>
+              <div class="section-text-title" style="color: #3b82f6;">导出最新 data.json 文件</div>
+            </div>
+          </div>
+          <span style="font-size: 14px; color: var(--muted);">></span>
+        </div>
+      </div>
+
+      <div class="my-section-block">
         <div class="my-section-title">客户专属</div>
         <div class="section-item" onclick="alert('惊喜福利已放入您的账户')">
           <div class="section-item-left">
@@ -798,14 +815,14 @@
         <p class="login-subtitle">加入近期电竞，尊享顶级护航服务</p>
         <form id="login-form" onsubmit="handleLogin(event)">
           <div class="form-group">
-            <label class="form-label">管理账号</label>
-            <input type="text" id="login-username" class="form-input" placeholder="请输入任意账号" required>
+            <label class="form-label">管理账号 (任意输入自动注册)</label>
+            <input type="text" id="login-username" class="form-input" placeholder="请输入您的账号" required>
           </div>
           <div class="form-group">
             <label class="form-label">安全密码</label>
-            <input type="password" id="login-password" class="form-input" placeholder="请输入任意密码" required>
+            <input type="password" id="login-password" class="form-input" placeholder="请输入您的密码" required>
           </div>
-          <button type="submit" class="login-btn">登 录</button>
+          <button type="submit" class="login-btn">登 录 / 注 册</button>
         </form>
       </div>
     </div>
@@ -884,14 +901,19 @@
       { id: 21, type: 'god', value: '六头+热成像', label: '豪华组合', tag: '神装', desc: '六头热成像，六头可自选，灵活搭配进阶装备。', price: 47.6, sales: 325623 }
     ];
 
-    // 2. 状态管理器
-    let currentUser = null;
+    // 2. 状态管理器 (支持持久化儲存本地)
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
     let selectedProduct = null;
-    let userOrders = [];
+    let userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
 
     // 3. 初始化加载
     window.addEventListener('DOMContentLoaded', () => {
       renderProducts();
+      // 如果本地有登錄緩存，刷新也會自動保持登錄狀態
+      if (currentUser) {
+        updateMyPageUI();
+        updateOrderPageUI();
+      }
     });
 
     // 4. 动态组装并渲染商品卡片列表
@@ -945,7 +967,6 @@
         if(targetBtn) targetBtn.classList.add('active');
       }
       
-      // 当切换到订单页或“我的”页面时，进行界面同步更新
       if(pageId === 'page-order') updateOrderPageUI();
       if(pageId === 'page-my') updateMyPageUI();
     }
@@ -987,19 +1008,27 @@
       showPage('page-product');
     }
 
-    // 8. 真正的登录状态机处理
+    // 8. 真正的登录/注册状态机处理（模擬數據寫入本地）
     function handleLogin(event) {
       event.preventDefault();
       const usernameInput = document.getElementById('login-username').value.trim();
+      const passwordInput = document.getElementById('login-password').value;
       
-      if(!usernameInput) return;
+      if(!usernameInput || !passwordInput) return;
 
+      // 構建用戶帳號與最新賬戶總額信息
       currentUser = {
         username: usernameInput,
-        totalBalance: (Math.random() * 200 + 10).toFixed(2),
-        pendingBalance: '0.00'
+        password: passwordInput, // 儲存安全密碼
+        totalBalance: (Math.random() * 8000 + 150).toFixed(2), // 隨機生成隨機總額
+        pendingBalance: '0.00',
+        registerTime: new Date().toLocaleString()
       };
 
+      // 同步寫入模擬庫 (localStorage)
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+      alert('帳戶註冊暨登錄成功！數據已同步至本地模擬庫。');
       showPage('page-my', 'btn-my');
     }
 
@@ -1011,7 +1040,9 @@
       }
       currentUser = null;
       userOrders = [];
-      alert('账号已安全退出');
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('userOrders');
+      alert('账号已安全退出，緩存已清理');
       showPage('page-home', 'btn-home');
     }
 
@@ -1113,17 +1144,73 @@
         return;
       }
 
+      // 扣減賬戶總額 (模擬購買，並更新賬戶總額至 data.json)
+      if (parseFloat(currentUser.totalBalance) >= selectedProduct.price) {
+        currentUser.totalBalance = (parseFloat(currentUser.totalBalance) - selectedProduct.price).toFixed(2);
+      } else {
+        // 如果扣成負數也支持，模擬高權限
+        currentUser.totalBalance = (parseFloat(currentUser.totalBalance) - selectedProduct.price).toFixed(2);
+      }
+      
+      // 保存最新的賬戶總額狀態到本地儲存
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
       // 新增订单结构
       userOrders.unshift({
         id: Date.now(),
         productName: selectedProduct.value,
         price: selectedProduct.price,
-        gameId: gameIdVal
+        gameId: gameIdVal,
+        orderTime: new Date().toLocaleString()
       });
 
+      localStorage.setItem('userOrders', JSON.stringify(userOrders));
+
       closeOrderModal();
-      alert('订单提交成功！特权专员即刻开始护航为您排单。');
+      alert('订购成功！賬戶餘額已即時扣減更新。');
       showPage('page-order', 'btn-order');
+    }
+
+    // 13. 【核心新增】一鍵導出為真正的 data.json 文件
+    function exportToDataJson() {
+      if (!currentUser) {
+        alert('當前未登錄，沒有檢測到可導出的註冊信息與賬戶數據。');
+        return;
+      }
+
+      // 構建標準 JSON 對象數據
+      const dataJsonObj = {
+        app_name: "近期电竞",
+        export_time: new Date().toLocaleString(),
+        user_profile: {
+          username: currentUser.username,
+          password: currentUser.password,
+          account_balances: {
+            total_amount: "¥" + currentUser.totalBalance,
+            pending_amount: "¥" + currentUser.pendingBalance
+          },
+          register_metadata: currentUser.registerTime
+        },
+        orders_history: userOrders
+      };
+
+      // 將對象轉換為 JSON 格式字符串
+      const jsonString = JSON.stringify(dataJsonObj, null, 2);
+
+      // 通過 Blob 創建可下載的文件流
+      const blob = new Blob([jsonString], { type: "application/json;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      
+      // 創建隱藏的下載鏈接並觸發點擊
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.href = url;
+      downloadAnchor.download = 'data.json';
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      
+      // 釋放對象內存
+      document.body.removeChild(downloadAnchor);
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
