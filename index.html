@@ -456,10 +456,6 @@
       background: #1f2937;
       color: #fff;
     }
-    .section-icon.blue {
-      background: rgba(59, 130, 246, 0.1);
-      color: #3b82f6;
-    }
     .section-text-title {
       font-size: 13px;
       font-weight: 600;
@@ -757,19 +753,6 @@
       </div>
 
       <div class="my-section-block">
-        <div class="my-section-title">核心工具 (JSON 导出)</div>
-        <div class="section-item" onclick="exportToDataJson()">
-          <div class="section-item-left">
-            <div class="section-icon blue">💾</div>
-            <div>
-              <div class="section-text-title" style="color: #3b82f6;">导出最新 data.json 文件</div>
-            </div>
-          </div>
-          <span style="font-size: 14px; color: var(--muted);">></span>
-        </div>
-      </div>
-
-      <div class="my-section-block">
         <div class="my-section-title">客户专属</div>
         <div class="section-item" onclick="alert('惊喜福利已放入您的账户')">
           <div class="section-item-left">
@@ -815,7 +798,7 @@
         <p class="login-subtitle">加入近期电竞，尊享顶级护航服务</p>
         <form id="login-form" onsubmit="handleLogin(event)">
           <div class="form-group">
-            <label class="form-label">管理账号 (任意输入自动注册)</label>
+            <label class="form-label">管理账号 (优先从 JSON 读取，没有则注册为0余额緩存)</label>
             <input type="text" id="login-username" class="form-input" placeholder="请输入您的账号" required>
           </div>
           <div class="form-group">
@@ -875,7 +858,7 @@
   </div>
 
   <script>
-    // 1. 结构化的核心商品数据
+    // 核心商品数据
     const PRODUCTS_DATA = [
       { id: 1, type: 'cost', value: '99保1T', label: '入门守护', tag: '性价比', desc: '99保1T，超高性价比首选，适合新手稳妥上分。', price: 99, sales: 0 },
       { id: 2, type: 'cost', value: '128保130万', label: '高返组合', tag: '性价比', desc: '128保130万，稳定输出，回报更可靠。', price: 128, sales: 0 },
@@ -901,26 +884,22 @@
       { id: 21, type: 'god', value: '六头+热成像', label: '豪华组合', tag: '神装', desc: '六头热成像，六头可自选，灵活搭配进阶装备。', price: 47.6, sales: 325623 }
     ];
 
-    // 2. 状态管理器 (支持持久化儲存本地)
+    // 状态管理
     let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
     let selectedProduct = null;
     let userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
 
-    // 3. 初始化加载
     window.addEventListener('DOMContentLoaded', () => {
       renderProducts();
-      // 如果本地有登錄緩存，刷新也會自動保持登錄狀態
       if (currentUser) {
         updateMyPageUI();
         updateOrderPageUI();
       }
     });
 
-    // 4. 动态组装并渲染商品卡片列表
     function renderProducts() {
       const gridCost = document.getElementById('grid-cost');
       const gridGod = document.getElementById('grid-god');
-      
       gridCost.innerHTML = '';
       gridGod.innerHTML = '';
 
@@ -951,7 +930,6 @@
       });
     }
 
-    // 5. 核心页面调度切换系统
     function showPage(pageId, footerBtnId = null) {
       document.querySelectorAll('.page-section').forEach(section => {
         section.classList.remove('active');
@@ -971,7 +949,6 @@
       if(pageId === 'page-my') updateMyPageUI();
     }
 
-    // 6. 首页子选项卡 Tab 高效切换
     function switchHomeTab(tabType) {
       const btnCost = document.getElementById('btn-cost');
       const btnGod = document.getElementById('btn-god');
@@ -991,7 +968,6 @@
       }
     }
 
-    // 7. 进入商品详情页
     function viewProductDetail(productId) {
       const product = PRODUCTS_DATA.find(p => p.id === productId);
       if(!product) return;
@@ -1008,7 +984,7 @@
       showPage('page-product');
     }
 
-    // 8. 真正的登录/注册状态机处理（模擬數據寫入本地）
+    // 【新增核心功能】登錄與註冊邏輯：優先讀取 data.json 檢查，如果沒有該用戶就自動註冊為 0 餘額帳戶並緩存
     function handleLogin(event) {
       event.preventDefault();
       const usernameInput = document.getElementById('login-username').value.trim();
@@ -1016,37 +992,79 @@
       
       if(!usernameInput || !passwordInput) return;
 
-      // 構建用戶帳號與最新賬戶總額信息
+      // 1. 讀取同目錄下的 data.json 數據庫文件
+      fetch('data.json')
+        .then(res => {
+          if (!res.ok) throw new Error('無法載入 data.json 文件');
+          return res.json();
+        })
+        .then(jsonData => {
+          // 2. 檢查 JSON 中有沒有輸入的這個人 (以用戶名為鍵)
+          if (jsonData && jsonData[usernameInput]) {
+            const matchedUser = jsonData[usernameInput];
+            
+            // 3. 驗證密碼是否正確
+            if (matchedUser.password === passwordInput) {
+              currentUser = {
+                username: usernameInput,
+                password: matchedUser.password,
+                totalBalance: parseFloat(matchedUser.totalBalance || 0).toFixed(2),
+                pendingBalance: parseFloat(matchedUser.pendingBalance || 0).toFixed(2),
+                registerTime: matchedUser.registerTime || new Date().toLocaleString()
+              };
+              
+              // 同步加載該用戶在 JSON 裡的訂單（如果有的話）
+              if (matchedUser.orders && matchedUser.orders.length > 0) {
+                userOrders = matchedUser.orders;
+                localStorage.setItem('userOrders', JSON.stringify(userOrders));
+              }
+
+              localStorage.setItem('currentUser', JSON.stringify(currentUser));
+              alert(`🎉 JSON 帳戶登錄成功！歡迎回來，您的餘額為 ¥${currentUser.totalBalance}`);
+              showPage('page-my', 'btn-my');
+            } else {
+              alert('❌ 密碼錯誤，請重新輸入！');
+            }
+          } else {
+            // 4. 如果 JSON 裡沒有這個人，則自動註冊一個 0 餘額的賬戶（緩存到 LocalStorage）
+            createNewCacheUser(usernameInput, passwordInput);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          // 如果 data.json 讀取失敗或不存在，降級處理：直接註冊為 0 餘額緩存帳戶
+          createNewCacheUser(usernameInput, passwordInput);
+        });
+    }
+
+    // 輔助函數：創建一個 0 餘額的緩存用戶
+    function createNewCacheUser(username, password) {
       currentUser = {
-        username: usernameInput,
-        password: passwordInput, // 儲存安全密碼
-        totalBalance: (Math.random() * 8000 + 150).toFixed(2), // 隨機生成隨機總額
+        username: username,
+        password: password,
+        totalBalance: '0.00', // 新用戶初始化為 0 餘額
         pendingBalance: '0.00',
         registerTime: new Date().toLocaleString()
       };
+      userOrders = []; // 新用戶清空訂單
 
-      // 同步寫入模擬庫 (localStorage)
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-      alert('帳戶註冊暨登錄成功！數據已同步至本地模擬庫。');
+      localStorage.setItem('userOrders', JSON.stringify(userOrders));
+      
+      alert('👤 JSON 中未找到該用戶。已自動為您在瀏覽器緩存中註冊 0 餘額賬戶！');
       showPage('page-my', 'btn-my');
     }
 
-    // 9. 状态退出清除
     function logoutSystem() {
-      if(!currentUser) {
-        alert('当前本就未登录账号');
-        return;
-      }
+      if(!currentUser) return;
       currentUser = null;
       userOrders = [];
       localStorage.removeItem('currentUser');
       localStorage.removeItem('userOrders');
-      alert('账号已安全退出，緩存已清理');
+      alert('已安全退出當前賬號');
       showPage('page-home', 'btn-home');
     }
 
-    // 10. “我的”个人页面数据呈现渲染
     function updateMyPageUI() {
       const userNameDiv = document.getElementById('user-name');
       const loginBtn = document.getElementById('btn-my-login');
@@ -1068,7 +1086,7 @@
               <div class="order-item-left">
                 <div>
                   <div class="order-item-title">${o.productName}</div>
-                  <div class="order-item-meta">买家凭证: ${o.gameId}</div>
+                  <div class="order-item-meta">订单凭证: ${o.gameId}</div>
                 </div>
               </div>
               <div class="order-item-status">已接单</div>
@@ -1087,7 +1105,6 @@
       }
     }
 
-    // 11. 独立订单管理页联动
     function updateOrderPageUI() {
       const noLoginTip = document.getElementById('order-no-login');
       const loggedContainer = document.getElementById('order-logged-container');
@@ -1111,7 +1128,7 @@
             </div>
           `).join('');
         } else {
-          mainOrdersList.innerHTML = '<div style="text-align:center; padding:40px 0; color:var(--muted); font-size:13px;">目前空空如也，快去选购爆款服务吧！</div>';
+          mainOrdersList.innerHTML = '<div style="text-align:center; padding:40px 0; color:var(--muted); font-size:13px;">目前空空如也，快去选购服务吧！</div>';
         }
       } else {
         noLoginTip.style.display = 'block';
@@ -1119,10 +1136,9 @@
       }
     }
 
-    // 12. 订购确认流控制弹窗
     function openOrderModal() {
       if (!currentUser) {
-        alert('为了保证服务能准确送达，请先完成快捷登录。');
+        alert('为了保证服务送达，请先完成快捷登录。');
         showPage('page-login');
         return;
       }
@@ -1144,18 +1160,10 @@
         return;
       }
 
-      // 扣減賬戶總額 (模擬購買，並更新賬戶總額至 data.json)
-      if (parseFloat(currentUser.totalBalance) >= selectedProduct.price) {
-        currentUser.totalBalance = (parseFloat(currentUser.totalBalance) - selectedProduct.price).toFixed(2);
-      } else {
-        // 如果扣成負數也支持，模擬高權限
-        currentUser.totalBalance = (parseFloat(currentUser.totalBalance) - selectedProduct.price).toFixed(2);
-      }
-      
-      // 保存最新的賬戶總額狀態到本地儲存
+      // 扣減賬戶總額（由零往下正常扣減）
+      currentUser.totalBalance = (parseFloat(currentUser.totalBalance) - selectedProduct.price).toFixed(2);
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-      // 新增订单结构
       userOrders.unshift({
         id: Date.now(),
         productName: selectedProduct.value,
@@ -1163,54 +1171,11 @@
         gameId: gameIdVal,
         orderTime: new Date().toLocaleString()
       });
-
       localStorage.setItem('userOrders', JSON.stringify(userOrders));
 
       closeOrderModal();
-      alert('订购成功！賬戶餘額已即時扣減更新。');
+      alert('订购成功！賬戶金額已即時更新扣減。');
       showPage('page-order', 'btn-order');
-    }
-
-    // 13. 【核心新增】一鍵導出為真正的 data.json 文件
-    function exportToDataJson() {
-      if (!currentUser) {
-        alert('當前未登錄，沒有檢測到可導出的註冊信息與賬戶數據。');
-        return;
-      }
-
-      // 構建標準 JSON 對象數據
-      const dataJsonObj = {
-        app_name: "近期电竞",
-        export_time: new Date().toLocaleString(),
-        user_profile: {
-          username: currentUser.username,
-          password: currentUser.password,
-          account_balances: {
-            total_amount: "¥" + currentUser.totalBalance,
-            pending_amount: "¥" + currentUser.pendingBalance
-          },
-          register_metadata: currentUser.registerTime
-        },
-        orders_history: userOrders
-      };
-
-      // 將對象轉換為 JSON 格式字符串
-      const jsonString = JSON.stringify(dataJsonObj, null, 2);
-
-      // 通過 Blob 創建可下載的文件流
-      const blob = new Blob([jsonString], { type: "application/json;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      
-      // 創建隱藏的下載鏈接並觸發點擊
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.href = url;
-      downloadAnchor.download = 'data.json';
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      
-      // 釋放對象內存
-      document.body.removeChild(downloadAnchor);
-      URL.revokeObjectURL(url);
     }
   </script>
 </body>
