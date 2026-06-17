@@ -3,35 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>近期电竞</title>
+  <title>近期电竞 - 玩家品质首选</title>
   <style>
     :root {
-      --bg: #f7f7f7;
+      --bg: #f4f6f9;
       --card: #fff;
       --primary: #f5b90c;
-      --text: #222;
-      --muted: #777;
-      --danger: #d93c3c;
+      --primary-dark: #d9a30a;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --danger: #ef4444;
       --border: #e5e7eb;
-      --shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
     }
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
+      line-height: 1.5;
     }
     .page {
       max-width: 640px;
       margin: 0 auto;
       min-height: 100vh;
       padding-bottom: 92px;
+      background: #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.03);
     }
     .top-bar {
-      padding: 18px 16px 10px;
+      padding: 20px 16px 12px;
       background: #fff;
       border-bottom: 1px solid var(--border);
       position: sticky;
@@ -40,21 +45,22 @@
     }
     .title {
       margin: 0;
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 800;
       text-align: center;
+      letter-spacing: 0.5px;
     }
     .subtitle {
-      margin: 8px 0 0;
-      font-size: 14px;
+      margin: 6px 0 0;
+      font-size: 13px;
       color: var(--muted);
       text-align: center;
       line-height: 1.5;
     }
     .nav-pill {
       display: flex;
-      gap: 10px;
-      padding: 14px 16px 12px;
+      gap: 12px;
+      padding: 12px 16px;
       background: #fff;
       border-bottom: 1px solid var(--border);
     }
@@ -64,32 +70,35 @@
       border-radius: 22px;
       padding: 10px 0;
       font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      color: var(--text);
-      background: #f5f5f5;
-      transition: background .2s ease;
+      color: #4b5563;
+      background: #f3f4f6;
+      transition: all .2s ease;
     }
     .nav-pill button.active {
       background: var(--primary);
       color: #fff;
       font-weight: 700;
+      box-shadow: 0 4px 12px rgba(245, 185, 12, 0.2);
     }
     .hero-banner {
       margin: 16px;
-      padding: 18px 18px 16px;
-      background: linear-gradient(180deg, #ffd96a 0%, #f5b90c 100%);
+      padding: 20px;
+      background: linear-gradient(135deg, #ffd96a 0%, #f5b90c 100%);
       border-radius: 16px;
-      color: #222;
+      color: #111827;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
+      box-shadow: 0 6px 20px rgba(245, 185, 12, 0.15);
     }
     .hero-banner h2 {
       margin: 0;
       font-size: 18px;
       font-weight: 800;
-      line-height: 1.3;
+      line-height: 1.4;
     }
     .hero-banner .badge {
       display: inline-flex;
@@ -97,31 +106,38 @@
       border-radius: 999px;
       background: #fff;
       color: #b45309;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       white-space: nowrap;
     }
     .promo-row {
       display: flex;
-      gap: 12px;
-      padding: 12px 16px;
-      background: transparent;
-      align-items: center;
-      justify-content: space-between;
+      gap: 10px;
+      padding: 0 16px 12px;
     }
     .promo-img {
-      flex: 1 1 0;
-      height: 110px;
-      border-radius: 12px;
+      flex: 1;
+      height: 90px;
+      border-radius: 10px;
       object-fit: cover;
-      background: #eee;
-      display: block;
+      background: #e5e7eb;
     }
     .section-title {
-      margin: 18px 16px 8px;
+      margin: 16px 16px 12px;
       font-size: 16px;
       font-weight: 700;
-      color: #111;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 2px;
     }
     .card-grid {
       display: grid;
@@ -131,21 +147,24 @@
     }
     .service-card {
       background: var(--card);
-      border-radius: 16px;
+      border-radius: 14px;
       overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.04);
       box-shadow: var(--shadow);
-      min-height: 260px;
       display: flex;
       flex-direction: column;
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+    .service-card:active {
+      transform: scale(0.98);
     }
     .service-card .image {
       position: relative;
-      min-height: 140px;
-      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), transparent 42%),
-                  linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      height: 110px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       color: #fff;
-      padding: 18px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -154,63 +173,70 @@
     .service-card .image::before {
       content: "品质护航";
       position: absolute;
-      top: 12px;
-      left: 14px;
-      font-size: 11px;
-      color: rgba(255,255,255,0.72);
+      top: 10px;
+      left: 12px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
     }
     .service-card .value {
-      margin: 0;
-      font-size: 22px;
+      margin: 12px 0 0;
+      font-size: 18px;
       font-weight: 800;
       line-height: 1.2;
+      word-break: break-all;
     }
     .service-card .label {
-      margin: 8px 0 0;
-      font-size: 12px;
-      color: rgba(255,255,255,0.9);
+      margin: 4px 0 0;
+      font-size: 11px;
+      color: rgba(255,255,255,0.7);
     }
     .service-card .body {
-      padding: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       flex: 1;
     }
     .service-card .tag {
       display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(245, 185, 28, 0.12);
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(245, 185, 12, 0.1);
       color: #b45309;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       width: fit-content;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .service-card .desc {
-      margin: 0 0 14px;
-      color: #404040;
-      font-size: 13px;
-      line-height: 1.6;
-      min-height: 48px;
+      margin: 0 0 12px;
+      color: #4b5563;
+      font-size: 12px;
+      line-height: 1.5;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     .service-card .footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      font-size: 14px;
+      font-size: 13px;
+      border-top: 1px dotted var(--border);
+      padding-top: 8px;
     }
     .service-card .price {
       color: var(--danger);
-      font-weight: 700;
+      font-weight: 800;
+      font-size: 15px;
     }
     .service-card .sales {
       color: var(--muted);
-      white-space: nowrap;
+      font-size: 11px;
     }
     .page-footer {
       position: fixed;
@@ -224,33 +250,36 @@
       margin: 0 auto;
       display: flex;
       justify-content: space-around;
-      padding: 10px 0;
-      box-shadow: 0 -6px 18px rgba(0,0,0,0.08);
+      padding: 8px 0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
       z-index: 10;
     }
     .page-footer button {
       border: none;
       background: transparent;
-      color: #444;
-      font-size: 12px;
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 600;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
       cursor: pointer;
+      flex: 1;
     }
     .page-footer button.active {
       color: var(--primary);
     }
     .page-footer button span {
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       background: #f3f4f6;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 14px;
+      transition: all 0.2s ease;
     }
     .page-footer button.active span {
       background: var(--primary);
@@ -264,32 +293,34 @@
     }
     .user-card {
       background: linear-gradient(135deg, var(--primary) 0%, #f5a700 100%);
-      padding: 30px 20px;
+      padding: 35px 20px;
       text-align: center;
       color: #fff;
-      border-radius: 0;
     }
     .user-avatar {
-      width: 60px;
-      height: 60px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.25);
       margin: 0 auto 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 32px;
+      border: 2px solid rgba(255,255,255,0.5);
     }
     .user-login-btn {
       display: inline-block;
-      padding: 8px 20px;
-      background: rgba(255,255,255,0.3);
-      border: 1px solid rgba(255,255,255,0.5);
+      padding: 6px 20px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
       border-radius: 20px;
       color: #fff;
       cursor: pointer;
-      font-size: 14px;
-      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 6px;
+      text-decoration: none;
     }
     .balance-box {
       display: grid;
@@ -297,92 +328,99 @@
       gap: 12px;
       padding: 16px;
       background: #fff;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 8px solid var(--bg);
     }
     .balance-item {
       background: #f9fafb;
-      padding: 16px;
+      padding: 14px;
       border-radius: 12px;
       text-align: center;
+      border: 1px solid var(--border);
     }
     .balance-label {
       font-size: 12px;
       color: var(--muted);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     .balance-amount {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
-      color: var(--primary);
+      color: var(--text);
     }
     .orders-section {
       padding: 16px;
       background: #fff;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 8px solid var(--bg);
     }
     .orders-title {
       font-size: 14px;
       font-weight: 700;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .order-tabs {
       display: flex;
       gap: 16px;
-      overflow-x: auto;
-      padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .order-tabs button {
       background: transparent;
       border: none;
-      padding: 8px 0;
+      padding: 8px 4px;
       color: var(--muted);
       font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
-      white-space: nowrap;
       border-bottom: 2px solid transparent;
     }
     .order-tabs button.active {
       color: var(--text);
       border-bottom-color: var(--primary);
     }
-    .order-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
+    .order-list-container {
+      min-height: 60px;
     }
-    .order-item:last-child {
+    .order-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .order-item-row:last-child {
       border-bottom: none;
     }
-    .order-icon {
-      font-size: 28px;
-      margin-right: 12px;
+    .order-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .order-info {
-      flex: 1;
-    }
-    .order-name {
+    .order-item-title {
       font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
+      font-weight: 700;
     }
-    .order-status {
+    .order-item-meta {
       font-size: 11px;
       color: var(--muted);
+      margin-top: 2px;
+    }
+    .order-item-status {
+      font-size: 12px;
+      color: #10b981;
+      font-weight: 600;
+      background: #ecfdf5;
+      padding: 2px 8px;
+      border-radius: 4px;
     }
     .my-section-block {
       background: #fff;
-      padding: 16px;
-      margin-bottom: 12px;
-      border-radius: 12px;
+      padding: 0 16px;
+      border-bottom: 8px solid var(--bg);
     }
     .my-section-title {
       font-size: 14px;
       font-weight: 700;
-      margin-bottom: 12px;
+      padding: 14px 0 4px;
     }
     .section-item {
       display: flex;
@@ -390,6 +428,7 @@
       justify-content: space-between;
       padding: 14px 0;
       border-bottom: 1px solid var(--border);
+      cursor: pointer;
     }
     .section-item:last-child {
       border-bottom: none;
@@ -400,17 +439,17 @@
       gap: 12px;
     }
     .section-icon {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: #f3f4f6;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 16px;
     }
     .section-icon.orange {
-      background: rgba(245, 185, 28, 0.1);
+      background: rgba(245, 185, 12, 0.1);
       color: var(--primary);
     }
     .section-icon.dark {
@@ -421,10 +460,6 @@
       font-size: 13px;
       font-weight: 600;
     }
-    .section-text-desc {
-      font-size: 12px;
-      color: var(--muted);
-    }
     .login-container {
       display: flex;
       flex-direction: column;
@@ -432,28 +467,27 @@
       align-items: center;
       min-height: 100vh;
       padding: 20px;
-      background: #f7f7f7;
+      background: var(--bg);
     }
     .login-box {
       background: #fff;
       border-radius: 16px;
-      padding: 40px 24px;
+      padding: 32px 24px;
       width: 100%;
       max-width: 380px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      box-shadow: var(--shadow);
     }
     .login-title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 800;
       text-align: center;
-      margin: 0 0 8px;
-      color: #111;
+      margin: 0 0 6px;
     }
     .login-subtitle {
       font-size: 13px;
       color: var(--muted);
       text-align: center;
-      margin: 0 0 32px;
+      margin: 0 0 24px;
     }
     .form-group {
       margin-bottom: 16px;
@@ -462,70 +496,60 @@
       display: block;
       font-size: 13px;
       font-weight: 600;
-      margin-bottom: 8px;
-      color: #333;
+      margin-bottom: 6px;
     }
     .form-input {
       width: 100%;
-      padding: 12px 14px;
+      padding: 12px;
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 14px;
       outline: none;
-      transition: border-color .2s ease;
     }
     .form-input:focus {
       border-color: var(--primary);
     }
     .login-btn {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       background: var(--primary);
       color: #fff;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      margin-top: 24px;
-      transition: opacity .2s ease;
-    }
-    .login-btn:hover {
-      opacity: 0.9;
-    }
-    .login-footer {
-      text-align: center;
       margin-top: 16px;
-      font-size: 13px;
-      color: var(--muted);
     }
     .login-back-btn {
       position: absolute;
       top: 20px;
       left: 20px;
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: #f3f4f6;
-      border: none;
+      background: #fff;
+      border: 1px solid var(--border);
       cursor: pointer;
-      font-size: 18px;
+      font-size: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      z-index: 10;
     }
     .no-login-tip {
       text-align: center;
-      padding: 40px 20px;
+      padding: 60px 20px;
       color: var(--muted);
     }
     .no-login-icon {
       font-size: 48px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .no-login-text {
       font-size: 14px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .no-login-btn {
       display: inline-block;
@@ -538,18 +562,9 @@
       font-weight: 700;
       cursor: pointer;
     }
-    @media (max-width: 520px) {
-      .card-grid {
-        grid-template-columns: 1fr;
-      }
-      .hero-banner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
     /* Product detail styles */
     .product-header {
-      padding: 18px 16px;
+      padding: 16px;
       background: #fff;
       border-bottom: 1px solid var(--border);
       position: sticky;
@@ -557,43 +572,71 @@
       z-index: 6;
       display: flex;
       align-items: center;
-      gap: 12px;
     }
     .product-banner {
       width: 100%;
-      height: 220px;
+      height: 180px;
       object-fit: cover;
       display: block;
-      border-radius: 8px;
-      background: #eee;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #374151 0%, #111827 100%);
     }
     .price-block {
       background: #fff;
-      padding: 18px;
+      padding: 16px 0;
       border-bottom: 1px solid var(--border);
     }
     .price-row {
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
     }
     .price-big { font-size: 28px; color: var(--danger); font-weight:800; }
     .buy-fixed {
       position: fixed;
       left: 0;
       right: 0;
-      bottom: 56px; /* 抬高一点，不挡住最下面的主导航栏 */
+      bottom: 58px;
       max-width: 640px;
       margin: 0 auto;
-      padding: 12px 16px;
-      background: #fff;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
       border-top: 1px solid var(--border);
       display:flex;
       gap:12px;
       align-items:center;
       justify-content:space-between;
       z-index: 9;
+    }
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #fff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    }
+    .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-btn { flex: 1; padding: 12px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; }
+    .modal-btn-cancel { background: #f3f4f6; color: #4b5563; }
+    .modal-btn-confirm { background: #ff4d4f; color: #fff; }
+
+    @media (max-width: 480px) {
+      .card-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -607,8 +650,8 @@
       </header>
 
       <section class="nav-pill">
-        <button class="active" id="btn-cost">性价比单</button>
-        <button id="btn-god">神装六套</button>
+        <button class="active" id="btn-cost" onclick="switchHomeTab('cost')">性价比单</button>
+        <button id="btn-god" onclick="switchHomeTab('god')">神装六套</button>
       </section>
 
       <section class="hero-banner">
@@ -617,392 +660,65 @@
           <span class="badge">双重热卖</span>
         </div>
       </section>
+      
       <section class="promo-row">
-        <img class="promo-img" src="assets/1.jpg" alt="近期电竞">
-        <img class="promo-img" src="assets/1.jpg" alt="近期电竞">
-        <img class="promo-img" src="assets/1.jpg" alt="近期电竞">
+        <img class="promo-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='60' viewBox='0 0 100 60'><rect width='100%25' height='100%25' fill='%23f5b90c'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23fff' font-size='10'>近期电竞</text></svg>" alt="Promo">
+        <img class="promo-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='60' viewBox='0 0 100 60'><rect width='100%25' height='100%25' fill='%231e293b'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23fff' font-size='10'>专业护航</text></svg>" alt="Promo">
+        <img class="promo-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='60' viewBox='0 0 100 60'><rect width='100%25' height='100%25' fill='%23d93c3c'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23fff' font-size='10'>极速上分</text></svg>" alt="Promo">
       </section>
 
       <div id="wrapper-cost">
         <section class="section-title">性价比爆款</section>
-        <main class="card-grid">
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">99保1T</p>
-                <p class="label">入门守护</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">99保1T，超高性价比首选，适合新手稳妥上分。</p>
-              <div class="footer">
-                <span class="price">¥99</span>
-                <span class="sales">已售 0</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">128保130万</p>
-                <p class="label">高返组合</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">128保130万，稳定输出，回报更可靠。</p>
-              <div class="footer">
-                <span class="price">¥128</span>
-                <span class="sales">已售 0</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">228保2T</p>
-                <p class="label">大额护航</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">228保2T，大额回报，稳健长期护航。</p>
-              <div class="footer">
-                <span class="price">¥228</span> <span class="sales">已售 0</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">999至尊保10T</p>
-                <p class="label">顶级豪华</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">999至尊保10T，顶级豪华护航，尊享最强保障。</p>
-              <div class="footer">
-                <span class="price">¥999</span>
-                <span class="sales">已售 53</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">58保58万</p>
-                <p class="label">加量不加价</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">58保58万，加量不加价，精选经济上分套餐。</p> <div class="footer">
-                <span class="price">¥58</span> <span class="sales">已售 223</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">168保2T</p>
-                <p class="label">双倍收益</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">168保2T，翻倍收益，更大回报。</p>
-              <div class="footer">
-                <span class="price">¥168</span>
-                <span class="sales">已售 67</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">238保3T</p>
-                <p class="label">三倍升级</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">238保3T，三倍升级，稳健长期。</p>
-              <div class="footer">
-                <span class="price">¥238</span>
-                <span class="sales">已售 235</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">338保5T</p>
-                <p class="label">五倍豪华</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">338保5T，五倍豪华，实力爆表。</p>
-              <div class="footer">
-                <span class="price">¥338</span>
-                <span class="sales">已售 5912</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">498保8T</p>
-                <p class="label">八倍联盟</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">498保8T，八倍联盟，顶级保障。</p>
-              <div class="footer">
-                <span class="price">¥498</span>
-                <span class="sales">已售 2542</span>
-              </div>
-            </div>
-          </article> <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">648保10T</p>
-                <p class="label">十倍王者</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">648保10T，十倍王者，尊享护航。</p>
-              <div class="footer">
-                <span class="price">¥648</span>
-                <span class="sales">已售 5365</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">888保15T</p>
-                <p class="label">十五倍尊享</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">888保15T，十五倍尊享，极致回报。</p>
-              <div class="footer">
-                <span class="price">¥888</span>
-                <span class="sales">已售 9983</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">1188保20T</p>
-                <p class="label">二十倍豪杰</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">1188保20T，二十倍豪杰，超级大单。</p>
-              <div class="footer">
-                <span class="price">¥1188</span>
-                <span class="sales">已售 541</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">1688保30T</p>
-                <p class="label">三十倍皇帝</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">1688保30T，三十倍皇帝，铁血保障。</p>
-              <div class="footer">
-                <span class="price">¥1688</span>
-                <span class="sales">已售 46312</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">1万普通会员</p>
-                <p class="label">实惠</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">普通会员，普通护航。</p>
-              <div class="footer">
-                <span class="price">¥10000</span>
-                <span class="sales">已售 93853</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">20万黄金会员</p>
-                <p class="label">季节限定</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">黄金会员，终极护航。</p>
-              <div class="footer">
-                <span class="price">¥200000</span>
-                <span class="sales">已售 234922</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">50万钻石会员</p> <p class="label">热销榜榜2</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">护航传奇，钻石会员专享特权。</p> <div class="footer">
-                <span class="price">¥500000</span>
-                <span class="sales">已售 45352356</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">100万至尊会员</p>
-                <p class="label">热销榜榜1</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">性价比</div>
-              <p class="desc">护航传奇，至尊会员，终极护航。</p>
-              <div class="footer">
-                <span class="price">¥999999</span>
-                <span class="sales">已售 124553412467</span>
-              </div>
-            </div>
-          </article>
-        </main>
+        <main class="card-grid" id="grid-cost"></main>
       </div>
 
       <div id="wrapper-god" style="display:none;">
         <section class="section-title">神装六套精选</section>
-        <main class="card-grid">
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">六套+MPX+热成像</p>
-                <p class="label">豪华组合</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">神装</div>
-              <p class="desc">六套热成像MPX，全套装备配齐，快速提升战力。</p>
-              <div class="footer">
-                <span class="price">¥89.6</span>
-                <span class="sales">已售 1245</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">六套+MK14+热成像</p>
-                <p class="label">豪华组合</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">神装</div>
-              <p class="desc">六套热成像MK14，远程压制与火力兼备。</p>
-              <div class="footer">
-                <span class="price">¥75.6</span>
-                <span class="sales">已售 2356</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">六套+H4+热成像</p>
-                <p class="label">豪华组合</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">神装</div>
-              <p class="desc">六套热成像H4，防守与推进兼备，适合稳健作战。</p>
-              <div class="footer">
-                <span class="price">¥75.6</span>
-                <span class="sales">已售 2351</span>
-              </div>
-            </div>
-          </article>
-          <article class="service-card">
-            <div class="image">
-              <div>
-                <p class="value">六头+热成像</p>
-                <p class="label">豪华组合</p>
-              </div>
-            </div>
-            <div class="body">
-              <div class="tag">神装</div>
-              <p class="desc">六头热成像，六头可自选，灵活搭配进阶装备。</p>
-              <div class="footer">
-                <span class="price">¥47.6</span>
-                <span class="sales">已售 325623</span>
-              </div>
-            </div>
-          </article>
-        </main>
+        <main class="card-grid" id="grid-god"></main>
       </div>
     </div>
   </div>
 
   <div class="page-section" id="page-product">
-    <div class="page">
+    <div class="page" style="position: relative;">
       <header class="product-header">
-        <button id="btn-product-back" class="login-back-btn">←</button>
-        <div style="flex:1; margin-left: 40px;">
+        <button onclick="showPage('page-home', 'btn-home')" class="login-back-btn">←</button>
+        <div style="flex:1; margin-left: 46px;">
           <div id="product-title" style="font-weight:800; font-size:16px;">商品详情</div>
-          <div id="product-sub" style="font-size:12px; color:var(--muted); margin-top:6px;">月售 · 0</div>
+          <div id="product-sub" style="font-size:12px; color:var(--muted); margin-top:2px;">全区通用 · 极速处理</div>
         </div>
       </header>
 
       <main style="padding:16px">
-        <img id="product-banner" class="product-banner" src="assets/1.jpg" alt="banner">
+        <div class="product-banner" style="display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; text-align: center;">
+          <h1 id="banner-value" style="margin: 0; font-size: 26px; font-weight: 900; letter-spacing: 1px;">-</h1>
+          <p id="banner-label" style="margin: 6px 0 0; opacity: 0.8; font-size: 13px;">-</p>
+        </div>
+        
         <div class="price-block">
           <div class="price-row">
             <div>
               <div id="product-price" class="price-big">¥0</div>
-              <div id="product-tag" style="font-size:13px; color:var(--muted); margin-top:6px;"></div>
+              <div id="product-tag" style="font-size:12px; margin-top:4px; font-weight:700; color:#b45309; background:rgba(245, 185, 12, 0.15); padding:2px 8px; border-radius:4px; width:fit-content;"></div>
             </div>
             <div style="text-align:right">
-              <div style="font-size:13px; color:var(--muted);">全区通用</div>
+              <div style="font-size:12px; color:var(--muted); font-weight: 600;">官方认证出品</div>
             </div>
           </div>
         </div>
 
-        <section style="margin-top:12px; background:#fff; padding:14px; border-radius:12px;">
-          <div style="font-weight:700; margin-bottom:8px;">商品说明</div>
-          <div id="product-desc" style="color:var(--muted); line-height:1.6;">商品详细描述</div>
+        <section style="margin-top:16px; background:#f9fafb; padding:16px; border-radius:12px; border: 1px solid var(--border);">
+          <div style="font-weight:700; margin-bottom:6px; font-size:14px;">服务说明</div>
+          <div id="product-desc" style="color:#4b5563; line-height:1.6; font-size:13px;">商品详细描述</div>
         </section>
       </main>
 
       <div class="buy-fixed">
-        <div style="display:flex; align-items:center; gap:12px">
-          <button id="product-cs" style="border:none; background:#f3f4f6; padding:10px 14px; border-radius:10px">客服</button>
-          <button id="product-fav" style="border:none; background:#f3f4f6; padding:10px 14px; border-radius:10px">收藏</button>
+        <div style="display:flex; align-items:center; gap:8px">
+          <button style="border:1px solid var(--border); background:#fff; padding:8px 12px; border-radius:8px; font-size:12px; font-weight:600;" onclick="alert('客服系统对接中...')">客服</button>
+          <button style="border:1px solid var(--border); background:#fff; padding:8px 12px; border-radius:8px; font-size:12px; font-weight:600;" onclick="alert('收藏成功')">收藏</button>
         </div>
-        <button id="product-buy" style="background:#ff4d4f; color:#fff; padding:12px 22px; border-radius:28px; border:none; font-weight:800; cursor:pointer;">立即购买</button>
+        <button onclick="openOrderModal()" style="background:#ff4d4f; color:#fff; padding:10px 24px; border-radius:20px; border:none; font-size:14px; font-weight:800; cursor:pointer; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);">立即购买</button>
       </div>
     </div>
   </div>
@@ -1010,98 +726,65 @@
   <div class="page-section" id="page-my">
     <div class="page">
       <div class="user-card">
-        <div class="user-avatar">👤</div>
-        <div id="user-name" style="font-size: 16px; font-weight: 700; margin: 8px 0;">点击登录</div>
-        <button id="btn-my-login" class="user-login-btn">登录/注册</button>
+        <div class="user-avatar" id="my-avatar">👤</div>
+        <div id="user-name" style="font-size: 16px; font-weight: 700; margin: 4px 0;">点击登录</div>
+        <button id="btn-my-login" class="user-login-btn" onclick="showPage('page-login')">登录/注册</button>
       </div>
 
       <div class="balance-box">
         <div class="balance-item">
-          <div class="balance-label">总共</div>
-          <div id="total-amount" class="balance-amount">¥0</div>
+          <div class="balance-label">账户总额</div>
+          <div id="total-amount" class="balance-amount">¥0.00</div>
         </div>
         <div class="balance-item">
-          <div class="balance-label">待提现</div>
-          <div id="pending-amount" class="balance-amount">¥0</div>
+          <div class="balance-label">可提现金额</div>
+          <div id="pending-amount" class="balance-amount">¥0.00</div>
         </div>
       </div>
 
       <div class="orders-section">
-        <div class="orders-title">我的订单</div>
+        <div class="orders-title">我的服务订单</div>
         <div class="order-tabs">
-          <button class="active">待付款</button>
-          <button>待接单</button>
-          <button>服务中</button>
-          <button>已完成</button>
+          <button class="active">全部订单</button>
         </div>
-        <div style="text-align: center; padding: 30px 16px; color: var(--muted); font-size: 14px;">
-          暂无订单
+        <div id="my-orders-list" class="order-list-container" style="font-size: 13px; color: var(--muted); text-align: center; padding: 20px 0;">
+          暂无订单数据
         </div>
       </div>
 
       <div class="my-section-block">
-        <div class="my-section-title">福利活动</div>
-        <div class="section-item">
+        <div class="my-section-title">客户专属</div>
+        <div class="section-item" onclick="alert('惊喜福利已放入您的账户')">
           <div class="section-item-left">
             <div class="section-icon orange">🎁</div>
-            <div>
-              <div class="section-text-title">福利惊喜多多</div>
-            </div>
+            <div><div class="section-text-title">开业惊喜福利专区</div></div>
           </div>
-          <span style="font-size: 16px; color: var(--muted);">></span>
+          <span style="font-size: 14px; color: var(--muted);">></span>
         </div>
-      </div>
-
-      <div class="my-section-block">
-        <div class="my-section-title">联系客服</div>
-        <div class="section-item">
+        <div class="section-item" onclick="alert('正在为您接入专属群聊咨询服务...')">
           <div class="section-item-left">
             <div class="section-icon dark">💬</div>
-            <div>
-              <div class="section-text-title">遇到问题联系我</div>
-            </div>
+            <div><div class="section-text-title">遇到异常问题联系我</div></div>
           </div>
-          <span style="font-size: 16px; color: var(--muted);">></span>
+          <span style="font-size: 14px; color: var(--muted);">></span>
         </div>
       </div>
 
       <div class="my-section-block">
-        <div class="my-section-title">更多功能</div>
-        <div class="section-item">
+        <div class="my-section-title">核心工具</div>
+        <div class="section-item" onclick="alert('入驻通道暂未对公众开放')">
           <div class="section-item-left">
             <div class="section-icon">👥</div>
-            <div>
-              <div class="section-text-title">打手入驻</div>
-            </div>
+            <div><div class="section-text-title">优质打手合伙人入驻</div></div>
           </div>
-          <span style="font-size: 16px; color: var(--muted);">></span>
+          <span style="font-size: 14px; color: var(--muted);">></span>
         </div>
-        <div class="section-item">
-          <div class="section-item-left">
-            <div class="section-icon">⚙️</div>
-            <div>
-              <div class="section-text-title">设置</div>
-            </div>
-          </div>
-          <span style="font-size: 16px; color: var(--muted);">></span>
-        </div>
-        <div class="section-item">
-          <div class="section-item-left">
-            <div class="section-icon">📄</div>
-            <div>
-              <div class="section-text-title">制作回款</div>
-            </div>
-          </div>
-          <span style="font-size: 16px; color: var(--muted);">></span>
-        </div>
-        <div class="section-item">
+        <div class="section-item" onclick="logoutSystem()">
           <div class="section-item-left">
             <div class="section-icon">🚪</div>
-            <div>
-              <div class="section-text-title">退出登录</div>
-            </div>
+            <div><div class="section-text-title">退出当前账号</div></div>
           </div>
-          <span style="font-size: 16px; color: var(--muted);">></span>
+          <span style="font-size: 14px; color: var(--muted);">></span>
         </div>
       </div>
     </div>
@@ -1109,24 +792,21 @@
 
   <div class="page-section" id="page-login" style="position: relative;">
     <div class="login-container">
-      <button id="btn-login-back" class="login-back-btn">←</button>
+      <button onclick="showPage('page-home', 'btn-home')" class="login-back-btn">←</button>
       <div class="login-box">
-        <h1 class="login-title">登录</h1>
-        <p class="login-subtitle">输入账号和密码登录</p>
-        <form id="login-form" onsubmit="event.preventDefault(); alert('登录成功(模拟)'); showPage('page-my','btn-my');">
+        <h1 class="login-title">欢迎登录</h1>
+        <p class="login-subtitle">加入近期电竞，尊享顶级护航服务</p>
+        <form id="login-form" onsubmit="handleLogin(event)">
           <div class="form-group">
-            <label class="form-label">账号</label>
-            <input type="text" class="form-input" placeholder="请输入账号" required>
+            <label class="form-label">管理账号</label>
+            <input type="text" id="login-username" class="form-input" placeholder="请输入任意账号" required>
           </div>
           <div class="form-group">
-            <label class="form-label">密码</label>
-            <input type="password" class="form-input" placeholder="请输入密码" required>
+            <label class="form-label">安全密码</label>
+            <input type="password" id="login-password" class="form-input" placeholder="请输入任意密码" required>
           </div>
           <button type="submit" class="login-btn">登 录</button>
         </form>
-        <div class="login-footer">
-          没有账号？<a href="#" style="color: var(--primary); text-decoration: none;">立即注册</a>
-        </div>
       </div>
     </div>
   </div>
@@ -1135,43 +815,128 @@
     <div class="page">
       <header class="top-bar">
         <p class="title">我的订单</p>
-        <p class="subtitle">查看和管理您的订单</p>
+        <p class="subtitle">实时查看和追踪您的交易服务订单</p>
       </header>
-      <div class="no-login-tip">
+      
+      <div class="no-login-tip" id="order-no-login">
         <div class="no-login-icon">🔒</div>
-        <div class="no-login-text">请先登录查看订单</div>
-        <button id="btn-order-login" class="no-login-btn">去登录</button>
+        <div class="no-login-text">您当前处于游客状态，请先登录查看订单</div>
+        <button onclick="showPage('page-login')" class="no-login-btn">去登录</button>
+      </div>
+
+      <div id="order-logged-container" style="display: none; padding: 16px;">
+        <div class="orders-title" style="border-bottom: 1px solid var(--border); padding-bottom: 8px;">进行中的服务</div>
+        <div id="main-orders-list"></div>
       </div>
     </div>
   </div>
 
   <footer class="page-footer">
-    <button id="btn-home" class="active">
-      <span>⌂</span>
-      首页
+    <button id="btn-home" class="active" onclick="showPage('page-home', 'btn-home')">
+      <span>⌂</span>首页
     </button>
-    <button id="btn-order">
-      <span>📦</span>
-      订单
+    <button id="btn-order" onclick="showPage('page-order', 'btn-order')">
+      <span>📦</span>订单
     </button>
-    <button id="btn-my">
-      <span>👤</span>
-      我的
+    <button id="btn-my" onclick="showPage('page-my', 'btn-my')">
+      <span>👤</span>我的
     </button>
   </footer>
 
+  <div class="modal-overlay" id="order-modal">
+    <div class="modal-box">
+      <div class="modal-title" id="modal-product-name">确认订购服务</div>
+      <div style="margin-bottom: 14px;">
+        <label class="form-label">您的游戏内ID / 联系QQ</label>
+        <input type="text" id="target-game-id" class="form-input" placeholder="请填写以便安排服务专员联络" required>
+      </div>
+      <div class="modal-btns">
+        <button class="modal-btn modal-btn-cancel" onclick="closeOrderModal()">取消</button>
+        <button class="modal-btn modal-btn-confirm" onclick="submitOrder()">确认提交</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // 1. 全局页面切换函数
+    // 1. 结构化的核心商品数据
+    const PRODUCTS_DATA = [
+      { id: 1, type: 'cost', value: '99保1T', label: '入门守护', tag: '性价比', desc: '99保1T，超高性价比首选，适合新手稳妥上分。', price: 99, sales: 0 },
+      { id: 2, type: 'cost', value: '128保130万', label: '高返组合', tag: '性价比', desc: '128保130万，稳定输出，回报更可靠。', price: 128, sales: 0 },
+      { id: 3, type: 'cost', value: '228保2T', label: '大额护航', tag: '性价比', desc: '228保2T，大额回报，稳健长期护航。', price: 228, sales: 0 },
+      { id: 4, type: 'cost', value: '999至尊保10T', label: '顶级豪华', tag: '性价比', desc: '999至尊保10T，顶级豪华护航，尊享最强保障。', price: 999, sales: 53 },
+      { id: 5, type: 'cost', value: '58保58万', label: '加量不加价', tag: '性价比', desc: '58保58万，加量不加价，精选经济上分套餐。', price: 58, sales: 223 },
+      { id: 6, type: 'cost', value: '168保2T', label: '双倍收益', tag: '性价比', desc: '168保2T，翻倍收益，更大回报。', price: 168, sales: 67 },
+      { id: 7, type: 'cost', value: '238保3T', label: '三倍升级', tag: '性价比', desc: '238保3T，三倍升级，稳健长期。', price: 238, sales: 235 },
+      { id: 8, type: 'cost', value: '338保5T', label: '五倍豪华', tag: '性价比', desc: '338保5T，五倍豪华，实力爆表。', price: 338, sales: 5912 },
+      { id: 9, type: 'cost', value: '498保8T', label: '八倍联盟', tag: '性价比', desc: '498保8T，八倍联盟，顶级保障。', price: 498, sales: 2542 },
+      { id: 10, type: 'cost', value: '648保10T', label: '十倍王者', tag: '性价比', desc: '648保10T，十倍王者，尊享护航。', price: 648, sales: 5365 },
+      { id: 11, type: 'cost', value: '888保15T', label: '十五倍尊享', tag: '性价比', desc: '888保15T，十五倍尊享，极致回报。', price: 888, sales: 9983 },
+      { id: 12, type: 'cost', value: '1188保20T', label: '二十倍豪杰', tag: '性价比', desc: '1188保20T，二十倍豪杰，超级大单。', price: 1188, sales: 541 },
+      { id: 13, type: 'cost', value: '1688保30T', label: '三十倍皇帝', tag: '性价比', desc: '1688保30T，三十倍皇帝，铁血保障。', price: 1688, sales: 46312 },
+      { id: 14, type: 'cost', value: '1万普通会员', label: '实惠', tag: '性价比', desc: '普通会员，普通护航。', price: 10000, sales: 93853 },
+      { id: 15, type: 'cost', value: '20万黄金会员', label: '季节限定', tag: '性价比', desc: '黄金会员，终极护航。', price: 200000, sales: 234922 },
+      { id: 16, type: 'cost', value: '50万钻石会员', label: '热销榜榜2', tag: '性价比', desc: '护航传奇，钻石会员专享特权。', price: 500000, sales: 45352356 },
+      { id: 17, type: 'cost', value: '100万至尊会员', label: '热销榜榜1', tag: '性价比', desc: '护航传奇，至尊会员，终极护航。', price: 999999, sales: 124553412 },
+      
+      { id: 18, type: 'god', value: '六套+MPX+热成像', label: '豪华组合', tag: '神装', desc: '六套热成像MPX，全套装备配齐，快速提升战力。', price: 89.6, sales: 1245 },
+      { id: 19, type: 'god', value: '六套+MK14+热成像', label: '豪华组合', tag: '神装', desc: '六套热成像MK14，远程压制与火力兼备。', price: 75.6, sales: 2356 },
+      { id: 20, type: 'god', value: '六套+H4+热成像', label: '豪华组合', tag: '神装', desc: '六套热成像H4，防守与推进兼备，适合稳健作战。', price: 75.6, sales: 2351 },
+      { id: 21, type: 'god', value: '六头+热成像', label: '豪华组合', tag: '神装', desc: '六头热成像，六头可自选，灵活搭配进阶装备。', price: 47.6, sales: 325623 }
+    ];
+
+    // 2. 状态管理器
+    let currentUser = null;
+    let selectedProduct = null;
+    let userOrders = [];
+
+    // 3. 初始化加载
+    window.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+    });
+
+    // 4. 动态组装并渲染商品卡片列表
+    function renderProducts() {
+      const gridCost = document.getElementById('grid-cost');
+      const gridGod = document.getElementById('grid-god');
+      
+      gridCost.innerHTML = '';
+      gridGod.innerHTML = '';
+
+      PRODUCTS_DATA.forEach(p => {
+        const cardHtml = `
+          <article class="service-card" onclick="viewProductDetail(${p.id})">
+            <div class="image">
+              <div>
+                <p class="value">${p.value}</p>
+                <p class="label">${p.label}</p>
+              </div>
+            </div>
+            <div class="body">
+              <div class="tag">${p.tag}</div>
+              <p class="desc">${p.desc}</p>
+              <div class="footer">
+                <span class="price">¥${p.price}</span>
+                <span class="sales">已售 ${p.sales}</span>
+              </div>
+            </div>
+          </article>
+        `;
+        if (p.type === 'cost') {
+          gridCost.innerHTML += cardHtml;
+        } else {
+          gridGod.innerHTML += cardHtml;
+        }
+      });
+    }
+
+    // 5. 核心页面调度切换系统
     function showPage(pageId, footerBtnId = null) {
-      // 隐藏所有主模块
       document.querySelectorAll('.page-section').forEach(section => {
         section.classList.remove('active');
       });
-      // 显示目标主模块
       const targetPage = document.getElementById(pageId);
       if(targetPage) targetPage.classList.add('active');
       
-      // 更新底部高亮状态
       if (footerBtnId) {
         document.querySelectorAll('.page-footer button').forEach(btn => {
           btn.classList.remove('active');
@@ -1179,56 +944,187 @@
         const targetBtn = document.getElementById(footerBtnId);
         if(targetBtn) targetBtn.classList.add('active');
       }
+      
+      // 当切换到订单页或“我的”页面时，进行界面同步更新
+      if(pageId === 'page-order') updateOrderPageUI();
+      if(pageId === 'page-my') updateMyPageUI();
     }
 
-    // 2. 底部主导航栏点击事件
-    document.getElementById('btn-home').addEventListener('click', () => showPage('page-home', 'btn-home'));
-    document.getElementById('btn-order').addEventListener('click', () => showPage('page-order', 'btn-order'));
-    document.getElementById('btn-my').addEventListener('click', () => showPage('page-my', 'btn-my'));
+    // 6. 首页子选项卡 Tab 高效切换
+    function switchHomeTab(tabType) {
+      const btnCost = document.getElementById('btn-cost');
+      const btnGod = document.getElementById('btn-god');
+      const wrapperCost = document.getElementById('wrapper-cost');
+      const wrapperGod = document.getElementById('wrapper-god');
 
-    // 3. 首页 Tab 切换逻辑（性价比单 vs 神装六套）
-    const btnCost = document.getElementById('btn-cost');
-    const btnGod = document.getElementById('btn-god');
-    const wrapperCost = document.getElementById('wrapper-cost');
-    const wrapperGod = document.getElementById('wrapper-god');
+      if (tabType === 'cost') {
+        btnCost.classList.add('active');
+        btnGod.classList.remove('active');
+        wrapperCost.style.display = 'block';
+        wrapperGod.style.display = 'none';
+      } else {
+        btnGod.classList.add('active');
+        btnCost.classList.remove('active');
+        wrapperCost.style.display = 'none';
+        wrapperGod.style.display = 'block';
+      }
+    }
 
-    btnCost.addEventListener('click', () => {
-      btnCost.classList.add('active');
-      btnGod.classList.remove('active');
-      wrapperCost.style.display = 'block';
-      wrapperGod.style.display = 'none';
-    });
+    // 7. 进入商品详情页
+    function viewProductDetail(productId) {
+      const product = PRODUCTS_DATA.find(p => p.id === productId);
+      if(!product) return;
 
-    btnGod.addEventListener('click', () => {
-      btnGod.classList.add('active');
-      btnCost.classList.remove('remove'); // 清理行为
-      btnCost.classList.remove('active');
-      wrapperCost.style.display = 'none';
-      wrapperGod.style.display = 'block';
-    });
+      selectedProduct = product;
 
-    // 4. 路由连通（登录与返回逻辑）
-    document.getElementById('btn-my-login').addEventListener('click', () => showPage('page-login'));
-    document.getElementById('btn-order-login').addEventListener('click', () => showPage('page-login'));
-    document.getElementById('btn-login-back').addEventListener('click', () => showPage('page-home', 'btn-home'));
-    document.getElementById('btn-product-back').addEventListener('click', () => showPage('page-home', 'btn-home'));
+      document.getElementById('product-title').innerText = product.value;
+      document.getElementById('banner-value').innerText = product.value;
+      document.getElementById('banner-label').innerText = product.label;
+      document.getElementById('product-price').innerText = '¥' + product.price;
+      document.getElementById('product-desc').innerText = product.desc;
+      document.getElementById('product-tag').innerText = product.tag + '推荐';
 
-    // 5. 点击商品卡片进入详情页（注入模拟数据演示）
-    document.querySelectorAll('.service-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const val = card.querySelector('.value').innerText;
-        const price = card.querySelector('.price').innerText;
-        const desc = card.querySelector('.desc').innerText;
-        const tag = card.querySelector('.tag').innerText;
+      showPage('page-product');
+    }
 
-        document.getElementById('product-title').innerText = val;
-        document.getElementById('product-price').innerText = price;
-        document.getElementById('product-desc').innerText = desc;
-        document.getElementById('product-tag').innerText = tag;
+    // 8. 真正的登录状态机处理
+    function handleLogin(event) {
+      event.preventDefault();
+      const usernameInput = document.getElementById('login-username').value.trim();
+      
+      if(!usernameInput) return;
 
-        showPage('page-product');
+      currentUser = {
+        username: usernameInput,
+        totalBalance: (Math.random() * 200 + 10).toFixed(2),
+        pendingBalance: '0.00'
+      };
+
+      showPage('page-my', 'btn-my');
+    }
+
+    // 9. 状态退出清除
+    function logoutSystem() {
+      if(!currentUser) {
+        alert('当前本就未登录账号');
+        return;
+      }
+      currentUser = null;
+      userOrders = [];
+      alert('账号已安全退出');
+      showPage('page-home', 'btn-home');
+    }
+
+    // 10. “我的”个人页面数据呈现渲染
+    function updateMyPageUI() {
+      const userNameDiv = document.getElementById('user-name');
+      const loginBtn = document.getElementById('btn-my-login');
+      const totalAmountDiv = document.getElementById('total-amount');
+      const pendingAmountDiv = document.getElementById('pending-amount');
+      const myOrdersList = document.getElementById('my-orders-list');
+      const avatarDiv = document.getElementById('my-avatar');
+
+      if (currentUser) {
+        userNameDiv.innerText = currentUser.username;
+        avatarDiv.innerText = currentUser.username.substring(0,1).toUpperCase();
+        loginBtn.style.display = 'none';
+        totalAmountDiv.innerText = '¥' + currentUser.totalBalance;
+        pendingAmountDiv.innerText = '¥' + currentUser.pendingBalance;
+
+        if (userOrders.length > 0) {
+          myOrdersList.innerHTML = userOrders.map(o => `
+            <div class="order-item-row" style="text-align: left;">
+              <div class="order-item-left">
+                <div>
+                  <div class="order-item-title">${o.productName}</div>
+                  <div class="order-item-meta">买家凭证: ${o.gameId}</div>
+                </div>
+              </div>
+              <div class="order-item-status">已接单</div>
+            </div>
+          `).join('');
+        } else {
+          myOrdersList.innerText = '暂无进行中的服务订单';
+        }
+      } else {
+        userNameDiv.innerText = '点击登录';
+        avatarDiv.innerText = '👤';
+        loginBtn.style.display = 'inline-block';
+        totalAmountDiv.innerText = '¥0.00';
+        pendingAmountDiv.innerText = '¥0.00';
+        myOrdersList.innerText = '暂无订单数据';
+      }
+    }
+
+    // 11. 独立订单管理页联动
+    function updateOrderPageUI() {
+      const noLoginTip = document.getElementById('order-no-login');
+      const loggedContainer = document.getElementById('order-logged-container');
+      const mainOrdersList = document.getElementById('main-orders-list');
+
+      if (currentUser) {
+        noLoginTip.style.display = 'none';
+        loggedContainer.style.display = 'block';
+
+        if (userOrders.length > 0) {
+          mainOrdersList.innerHTML = userOrders.map(o => `
+            <div class="order-item-row">
+              <div class="order-item-left">
+                <div style="font-size:24px;">🎮</div>
+                <div>
+                  <div class="order-item-title">${o.productName}</div>
+                  <div class="order-item-meta">实付金额: <span style="color:var(--danger);font-weight:700">¥${o.price}</span> | 凭证: ${o.gameId}</div>
+                </div>
+              </div>
+              <div class="order-item-status">排队派单中</div>
+            </div>
+          `).join('');
+        } else {
+          mainOrdersList.innerHTML = '<div style="text-align:center; padding:40px 0; color:var(--muted); font-size:13px;">目前空空如也，快去选购爆款服务吧！</div>';
+        }
+      } else {
+        noLoginTip.style.display = 'block';
+        loggedContainer.style.display = 'none';
+      }
+    }
+
+    // 12. 订购确认流控制弹窗
+    function openOrderModal() {
+      if (!currentUser) {
+        alert('为了保证服务能准确送达，请先完成快捷登录。');
+        showPage('page-login');
+        return;
+      }
+      if (!selectedProduct) return;
+      
+      document.getElementById('modal-product-name').innerText = `确认订购：${selectedProduct.value} (¥${selectedProduct.price})`;
+      document.getElementById('target-game-id').value = '';
+      document.getElementById('order-modal').classList.add('active');
+    }
+
+    function closeOrderModal() {
+      document.getElementById('order-modal').classList.remove('active');
+    }
+
+    function submitOrder() {
+      const gameIdVal = document.getElementById('target-game-id').value.trim();
+      if (!gameIdVal) {
+        alert('请输入服务对接所需的角色游戏ID或QQ号码！');
+        return;
+      }
+
+      // 新增订单结构
+      userOrders.unshift({
+        id: Date.now(),
+        productName: selectedProduct.value,
+        price: selectedProduct.price,
+        gameId: gameIdVal
       });
-    });
+
+      closeOrderModal();
+      alert('订单提交成功！特权专员即刻开始护航为您排单。');
+      showPage('page-order', 'btn-order');
+    }
   </script>
 </body>
 </html>
