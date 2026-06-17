@@ -798,7 +798,7 @@
         <p class="login-subtitle">加入近期电竞，尊享顶级护航服务</p>
         <form id="login-form" onsubmit="handleLogin(event)">
           <div class="form-group">
-            <label class="form-label">管理账号 (优先从 JSON 读取，没有则注册为0余额緩存)</label>
+            <label class="form-label">管理账号 (优先从 JSON 读取，没有则注册为0余额缓存)</label>
             <input type="text" id="login-username" class="form-input" placeholder="请输入您的账号" required>
           </div>
           <div class="form-group">
@@ -891,6 +891,20 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       renderProducts();
+
+      // 新增：如果本地模拟数据库不存在，则初始化一版（保护静态环境下扣款和注册能成功运行）
+      if (!localStorage.getItem('mockUserDatabase')) {
+        const defaultDatabase = {
+          "admin": {
+            "password": "123",
+            "totalBalance": "500000.00",
+            "pendingBalance": "0.00",
+            "orders": []
+          }
+        };
+        localStorage.setItem('mockUserDatabase', JSON.stringify(defaultDatabase));
+      }
+
       if (currentUser) {
         updateMyPageUI();
         updateOrderPageUI();
@@ -984,7 +998,7 @@
       showPage('page-product');
     }
 
-    // 【新增核心功能】登錄與註冊邏輯：優先讀取 data.json 檢查，如果沒有該用戶就自動註冊為 0 餘額帳戶並緩存
+    // 核心更改：1. 修正读取路径为 data/data.json；2. 结合本地模拟库保证数据在前端可以真正被更新
     function handleLogin(event) {
       event.preventDefault();
       const usernameInput = document.getElementById('login-username').value.trim();
@@ -992,67 +1006,102 @@
       
       if(!usernameInput || !passwordInput) return;
 
-      // 1. 讀取同目錄下的 data.json 數據庫文件
-      fetch('data.json')
+      // 首先尝试从数据夹的 data/data.json 加载原始数据
+      fetch('data/data.json')
         .then(res => {
-          if (!res.ok) throw new Error('無法載入 data.json 文件');
+          if (!res.ok) throw new Error('无法载入 data/data.json 文件');
           return res.json();
         })
         .then(jsonData => {
-          // 2. 檢查 JSON 中有沒有輸入的這個人 (以用戶名為鍵)
           if (jsonData && jsonData[usernameInput]) {
             const matchedUser = jsonData[usernameInput];
             
-            // 3. 驗證密碼是否正確
             if (matchedUser.password === passwordInput) {
+              // 检查本地模拟库里有没有被修改过余额的记录，如果有，用本地修改过后的
+              const mockDb = JSON.parse(localStorage.getItem('mockUserDatabase')) || {};
+              const savedUser = mockDb[usernameInput] || matchedUser;
+
               currentUser = {
                 username: usernameInput,
-                password: matchedUser.password,
-                totalBalance: parseFloat(matchedUser.totalBalance || 0).toFixed(2),
-                pendingBalance: parseFloat(matchedUser.pendingBalance || 0).toFixed(2),
-                registerTime: matchedUser.registerTime || new Date().toLocaleString()
+                password: savedUser.password,
+                totalBalance: parseFloat(savedUser.totalBalance || 0).toFixed(2),
+                pendingBalance: parseFloat(savedUser.pendingBalance || 0).toFixed(2),
+                registerTime: savedUser.registerTime || new Date().toLocaleString()
               };
               
-              // 同步加載該用戶在 JSON 裡的訂單（如果有的話）
-              if (matchedUser.orders && matchedUser.orders.length > 0) {
-                userOrders = matchedUser.orders;
+              if (savedUser.orders && savedUser.orders.length > 0) {
+                userOrders = savedUser.orders;
                 localStorage.setItem('userOrders', JSON.stringify(userOrders));
+              } else {
+                userOrders = [];
+                localStorage.setItem('userOrders', JSON.stringify([]));
               }
 
               localStorage.setItem('currentUser', JSON.stringify(currentUser));
-              alert(`🎉 JSON 帳戶登錄成功！歡迎回來，您的餘額為 ¥${currentUser.totalBalance}`);
+              alert(`🎉 登录成功！欢迎回来，您的余额为 ¥${currentUser.totalBalance}`);
               showPage('page-my', 'btn-my');
             } else {
-              alert('❌ 密碼錯誤，請重新輸入！');
+              alert('❌ 密码错误，请重新输入！');
             }
           } else {
-            // 4. 如果 JSON 裡沒有這個人，則自動註冊一個 0 餘額的賬戶（緩存到 LocalStorage）
-            createNewCacheUser(usernameInput, passwordInput);
+            // 如果 JSON 中查无此人，从本地模拟数据库查找或注册
+            loadOrRegisterMockUser(usernameInput, passwordInput);
           }
         })
         .catch(err => {
-          console.error(err);
-          // 如果 data.json 讀取失敗或不存在，降級處理：直接註冊為 0 餘額緩存帳戶
-          createNewCacheUser(usernameInput, passwordInput);
+          console.warn("读取 data/data.json 失败或由于跨域限制，现直接转由前端模拟库处理:", err.message);
+          // 降级处理：直接从前端模拟数据库查找或注册
+          loadOrRegisterMockUser(usernameInput, passwordInput);
         });
     }
 
-    // 輔助函數：創建一個 0 餘額的緩存用戶
-    function createNewCacheUser(username, password) {
-      currentUser = {
-        username: username,
-        password: password,
-        totalBalance: '0.00', // 新用戶初始化為 0 餘額
-        pendingBalance: '0.00',
-        registerTime: new Date().toLocaleString()
-      };
-      userOrders = []; // 新用戶清空訂單
+    // 辅助函数：从前端模拟数据库里载入或创建用户
+    function loadOrRegisterMockUser(username, password) {
+      const mockDb = JSON.parse(localStorage.getItem('mockUserDatabase')) || {};
 
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      localStorage.setItem('userOrders', JSON.stringify(userOrders));
-      
-      alert('👤 JSON 中未找到該用戶。已自動為您在瀏覽器緩存中註冊 0 餘額賬戶！');
-      showPage('page-my', 'btn-my');
+      if (mockDb[username]) {
+        const matchedUser = mockDb[username];
+        if (matchedUser.password === password) {
+          currentUser = {
+            username: username,
+            password: matchedUser.password,
+            totalBalance: parseFloat(matchedUser.totalBalance || 0).toFixed(2),
+            pendingBalance: parseFloat(matchedUser.pendingBalance || 0).toFixed(2),
+            registerTime: matchedUser.registerTime || new Date().toLocaleString()
+          };
+          userOrders = matchedUser.orders || [];
+          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+          localStorage.setItem('userOrders', JSON.stringify(userOrders));
+          alert(`🎉 本地缓存账号登录成功！余额为 ¥${currentUser.totalBalance}`);
+          showPage('page-my', 'btn-my');
+        } else {
+          alert('❌ 密码错误，请重新输入！');
+        }
+      } else {
+        // 创建新缓存账号
+        currentUser = {
+          username: username,
+          password: password,
+          totalBalance: '0.00',
+          pendingBalance: '0.00',
+          registerTime: new Date().toLocaleString()
+        };
+        userOrders = [];
+
+        mockDb[username] = {
+          password: password,
+          totalBalance: '0.00',
+          pendingBalance: '0.00',
+          orders: []
+        };
+
+        localStorage.setItem('mockUserDatabase', JSON.stringify(mockDb));
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        localStorage.setItem('userOrders', JSON.stringify(userOrders));
+        
+        alert('👤 线上数据库未找到该用户。已为您自动注册 0 余额账号！');
+        showPage('page-my', 'btn-my');
+      }
     }
 
     function logoutSystem() {
@@ -1061,7 +1110,7 @@
       userOrders = [];
       localStorage.removeItem('currentUser');
       localStorage.removeItem('userOrders');
-      alert('已安全退出當前賬號');
+      alert('已安全退出当前账号');
       showPage('page-home', 'btn-home');
     }
 
@@ -1160,10 +1209,11 @@
         return;
       }
 
-      // 扣減賬戶總額（由零往下正常扣減）
+      // 1. 扣减当前登录用户在内存中的总额
       currentUser.totalBalance = (parseFloat(currentUser.totalBalance) - selectedProduct.price).toFixed(2);
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
+      // 2. 将订单塞入订单数组
       userOrders.unshift({
         id: Date.now(),
         productName: selectedProduct.value,
@@ -1173,8 +1223,16 @@
       });
       localStorage.setItem('userOrders', JSON.stringify(userOrders));
 
+      // 3. 同时把新余额和新订单，实时同步存进本地模拟数据库
+      const mockDb = JSON.parse(localStorage.getItem('mockUserDatabase')) || {};
+      if (mockDb[currentUser.username]) {
+        mockDb[currentUser.username].totalBalance = currentUser.totalBalance;
+        mockDb[currentUser.username].orders = userOrders;
+        localStorage.setItem('mockUserDatabase', JSON.stringify(mockDb));
+      }
+
       closeOrderModal();
-      alert('订购成功！賬戶金額已即時更新扣減。');
+      alert('订购成功！账户金额已即时更新扣减并保存在浏览器缓存中。');
       showPage('page-order', 'btn-order');
     }
   </script>
