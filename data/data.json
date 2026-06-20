@@ -19,5 +19,11 @@
     "pendingBalance": "4460.00",
     "registerTime": "2026/06/17 20:30:00",
     "orders": []
-  }
+  },
+  "小杰": {
+    "password": "xiaojie",
+    "totalBalance": "78",
+    "pendingBalance": "91",
+    "registerTime": "2026/06/17 21:30:00",
+    "orders": []
 }
