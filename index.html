@@ -116,6 +116,7 @@
       object-fit: cover;
       background: #eee;
       display: block;
+      width: 33%;
     }
     .section-title {
       margin: 18px 16px 8px;
@@ -138,6 +139,7 @@
       min-height: 260px;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
     }
     .service-card .image {
       position: relative;
@@ -347,32 +349,6 @@
       color: var(--text);
       border-bottom-color: var(--primary);
     }
-    .order-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .order-item:last-child {
-      border-bottom: none;
-    }
-    .order-icon {
-      font-size: 28px;
-      margin-right: 12px;
-    }
-    .order-info {
-      flex: 1;
-    }
-    .order-name {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .order-status {
-      font-size: 11px;
-      color: var(--muted);
-    }
     .my-section-block {
       background: #fff;
       padding: 16px;
@@ -420,10 +396,6 @@
     .section-text-title {
       font-size: 13px;
       font-weight: 600;
-    }
-    .section-text-desc {
-      font-size: 12px;
-      color: var(--muted);
     }
     .login-container {
       display: flex;
@@ -538,16 +510,6 @@
       font-weight: 700;
       cursor: pointer;
     }
-    @media (max-width: 520px) {
-      .card-grid {
-        grid-template-columns: 1fr;
-      }
-      .hero-banner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-    /* Product detail styles */
     .product-header {
       padding: 18px 16px;
       background: #fff;
@@ -595,6 +557,15 @@
       justify-content:space-between;
       z-index: 9;
     }
+    @media (max-width: 520px) {
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
@@ -624,7 +595,6 @@
 
       <!-- 性价比爆款商品流 -->
       <div id="wrapper-cost">
-        <!-- 在性价比爆款标题正上方加入三张图片 -->
         <section class="promo-row">
           <img class="promo-img" src="assets/1.jpg" alt="性价比爆款推荐1">
           <img class="promo-img" src="assets/1.jpg" alt="性价比爆款推荐2">
@@ -1130,14 +1100,14 @@
       <div class="login-box">
         <h1 class="login-title">登录</h1>
         <p class="login-subtitle">输入账号和密码登录</p>
-        <form id="login-form" onsubmit="event.preventDefault(); alert('登录成功(模拟)'); showPage('page-my','btn-my');">
+        <form id="login-form">
           <div class="form-group">
             <label class="form-label">账号</label>
-            <input type="text" class="form-input" placeholder="请输入账号" required>
+            <input type="text" id="login-username" class="form-input" placeholder="请输入账号" required>
           </div>
           <div class="form-group">
             <label class="form-label">密码</label>
-            <input type="password" class="form-input" placeholder="请输入密码" required>
+            <input type="password" id="login-password" class="form-input" placeholder="请输入密码" required>
           </div>
           <button type="submit" class="login-btn">登 录</button>
         </form>
@@ -1250,7 +1220,7 @@
     const playPromise = bgm.play();
     if (playPromise !== undefined) {
       playPromise.catch(() => {
-        // 如果被浏览器安全策略拦截，当用户首次触摸或点击屏幕任意地方时触发播放
+        // 如果被浏览器拦截，当用户首次触摸或点击屏幕任意地方时触发播放
         const startAudio = () => {
           bgm.play().then(() => {
             document.removeEventListener('click', startAudio);
@@ -1261,6 +1231,42 @@
         document.addEventListener('touchstart', startAudio);
       });
     }
+
+    // 7. 读取 data/data.json 进行登录校验
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const usernameInput = document.getElementById('login-username').value.trim();
+      const passwordInput = document.getElementById('login-password').value.trim();
+
+      // 读取 data/data.json
+      fetch('data/data.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('未成功加载 data/data.json');
+          }
+          return response.json();
+        })
+        .then(users => {
+          const matchUser = users.find(u => u.username === usernameInput && u.password === passwordInput);
+
+          if (matchUser) {
+            alert('登录成功！');
+            // 更新个人中心显示名称
+            document.getElementById('user-name').innerText = matchUser.username;
+            // 隐藏登录/注册按钮
+            document.getElementById('btn-my-login').style.display = 'none';
+            // 跳转至“我的”页面
+            showPage('page-my', 'btn-my');
+          } else {
+            alert('账号或密码错误，请重试！');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('读取账号数据库失败！请检查 GitHub 仓库中是否存在 data/data.json 文件。');
+        });
+    });
   </script>
 </body>
 </html>
