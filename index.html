@@ -1232,26 +1232,29 @@
       });
     }
 
-    // 7. 读取对象结构的 ./data/data.json 进行登录校验（完美适配 GitHub Pages 路径）
+    // 7. 读取 JSON 数据库进行登录校验 (基于 new URL 解决 GitHub Pages 子目录路径问题)
     document.getElementById('login-form').addEventListener('submit', function(e) {
       e.preventDefault();
 
       const usernameInput = document.getElementById('login-username').value.trim();
       const passwordInput = document.getElementById('login-password').value.trim();
 
-      // 改用相对当前路径 ./data/data.json
-      fetch('./data/data.json')
+      // 使用 new URL 自动拼接完整正确的访问路径，防止 GitHub Pages 路径错乱
+      const jsonUrl = new URL('data/data.json', window.location.href).href;
+
+      fetch(jsonUrl)
         .then(response => {
           if (!response.ok) {
-            throw new Error('未成功加载 data/data.json，HTTP状态: ' + response.status);
+            throw new Error('未成功加载 data/data.json，HTTP 状态码: ' + response.status);
           }
           return response.json();
         })
         .then(users => {
-          // 在 JSON 对象中直接使用用户名查找数据
+          // 在 JSON 对象中以账号名称为 key 直接检索
           const user = users[usernameInput];
 
-          if (user && user.password === passwordInput) {
+          // 校验账号存在且密码正确 (同时支持字符串或数字对比)
+          if (user && String(user.password) === passwordInput) {
             alert('登录成功！');
             
             // 更新“我的”页面展现的数据
@@ -1267,8 +1270,8 @@
           }
         })
         .catch(err => {
-          console.error(err);
-          alert('读取账号数据库失败！请检查 JINQI 仓库中是否存在 data/data.json 文件。');
+          console.error('详细错误:', err);
+          alert('读取账号数据库失败！请检查 data/data.json 文件路径与格式。');
         });
     });
   </script>
