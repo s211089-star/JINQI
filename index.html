@@ -1232,18 +1232,18 @@
       });
     }
 
-    // 7. 读取对象结构的 data/data.json 进行登录校验
+    // 7. 读取对象结构的 ./data/data.json 进行登录校验（完美适配 GitHub Pages 路径）
     document.getElementById('login-form').addEventListener('submit', function(e) {
       e.preventDefault();
 
       const usernameInput = document.getElementById('login-username').value.trim();
       const passwordInput = document.getElementById('login-password').value.trim();
 
-      // 请求 data 文件夹下的 data.json
-      fetch('data/data.json')
+      // 改用相对当前路径 ./data/data.json
+      fetch('./data/data.json')
         .then(response => {
           if (!response.ok) {
-            throw new Error('未成功加载 data/data.json');
+            throw new Error('未成功加载 data/data.json，HTTP状态: ' + response.status);
           }
           return response.json();
         })
@@ -1268,7 +1268,7 @@
         })
         .catch(err => {
           console.error(err);
-          alert('读取账号数据库失败！请检查 GitHub 仓库的 data 文件夹中是否存在 data.json。');
+          alert('读取账号数据库失败！请检查 JINQI 仓库中是否存在 data/data.json 文件。');
         });
     });
   </script>
